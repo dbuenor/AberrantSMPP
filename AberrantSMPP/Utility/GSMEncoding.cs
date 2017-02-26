@@ -474,8 +474,9 @@ namespace AberrantSMPP.Utility
 		#endregion
 	}
 
-	public class PackedGSMEnconding
+	public class PackedGSMEncoding : GSMEncoding
 	{
+		#region Private Methods
 		/// <summary>
 		/// Compacts a string of septets into octets.
 		/// </summary>
@@ -492,16 +493,16 @@ namespace AberrantSMPP.Utility
 			string octetSecond = string.Empty;
 			for (int i = 0; i < data.Length; i++)
 			{
-				string current = Convert.ToString((byte)data[i], 2).PadLeft(7, '0');
+				string current = System.Convert.ToString((byte)data[i], 2).PadLeft(7, '0');
 				if (i != 0 && i % 8 != 0)
 				{
 					string octetFirst = current.Substring(7 - i % 8);
 					string currentOctet = octetFirst + octetSecond;
-					output.Add(Convert.ToByte(currentOctet, 2));
+					output.Add(System.Convert.ToByte(currentOctet, 2));
 				}
 				octetSecond = current.Substring(0, 7 - i % 8);
 				if (i == data.Length - 1 && octetSecond != string.Empty)
-					output.Add(Convert.ToByte(octetSecond, 2));
+					output.Add(System.Convert.ToByte(octetSecond, 2));
 			}
 
 			byte[] array = new byte[output.Count];
@@ -509,10 +510,47 @@ namespace AberrantSMPP.Utility
 			return array;
 		}
 
-		public static byte[] GetBytes(string text)
+		private static string ConvertFrom7Bit(byte[] bytes)
 		{
-			throw new NotImplementedException();
+			var output = new StringBuilder();
+			var septetSecond = new byte[7];
+
+			for (int i = 0;i < bytes.Length; i++)
+			{
+				septetSecond[i % 7] = bytes[i];
+
+				if (i % 7 == 6)
+				{
+					septetSecond[7] = 0;
+					System.Convert.ToString()
+				}
+
+				if (i != 0 && i % 7 == 0)
+				{
+
+					output.Append(System.Convert.ToString((byte) 0, 2).p);
+					byte septetFirst =  bytes[i];
+					byte currentSeptet = septetFirst;
+
+					output.Append(System.Convert.ToString( ))
+				}
+			}
+
+			return output.ToString();
 		}
+		#endregion
+
+		#region Implementation Methods
+		public override byte[] GetBytes(string s)
+		{
+			return ConvertTo7Bit(s);
+		}
+
+		public override string GetString(byte[] bytes)
+		{
+			return ConvertFrom7Bit(bytes);
+		}
+		#endregion
 	}
 
 	internal class GSMBestFitEncoderFallback : EncoderFallback
